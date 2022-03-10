@@ -43,7 +43,7 @@ services:
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}
     command: >
-      sh -c "cd /usr/src/app && npm start"
+      sh -c "cd /usr/src/app && npx prisma migrate dev && npm start"
     ports:
       - ${VOLUNTEER_SERVICE_APP_PORT}:${VOLUNTEER_SERVICE_APP_PORT}
 
