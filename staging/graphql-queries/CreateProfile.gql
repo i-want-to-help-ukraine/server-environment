@@ -1,0 +1,72 @@
+# Requires Authorization=authId
+# The authId should be unique
+
+mutation CreateProfile {
+    createProfile(
+        input: {
+            authId: "1",
+            firstName: "First"
+            lastName: "User"
+            description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            organization: "Test Organization"
+            activityIds: ["cl0uci94p00036zpneezlzs0f"]
+            cityIds: ["cl0uci94o00016zpncsr8tmix"]
+            social: [{
+                url: "https://instagram.com/abc",
+                socialProviderId: "cl0uci94y00056zpno5ve81w0"
+            }]
+            paymentOptions: [{
+                metadata: {
+                    link: "https://send.monobank.ua/jar/81d2Lxf74y",
+                    test: "test"
+                },
+                paymentProviderId: "cl0uci94y00046zpnrsmsnsyw"
+            }]
+            contacts: [{
+                metadata: {
+                    phoneNumber: "+48511311304"
+                },
+                contactProviderId: "cl0uci94z00076zpn1ugcdio1"
+            }]
+        }
+    ) {
+        id
+        firstName
+        lastName
+        description
+        organization
+        verificationStatus
+        cities {
+            id
+            title
+        }
+        activities {
+            id
+            title
+        }
+        social {
+            id
+            url
+            provider {
+                id
+                title
+            }
+        }
+        payments {
+            id
+            metadata
+            provider {
+                id
+                title
+            }
+        }
+        contacts {
+            id
+            metadata
+            provider {
+                id
+                title
+            }
+        }
+    }
+}

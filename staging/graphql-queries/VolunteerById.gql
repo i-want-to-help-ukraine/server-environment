@@ -1,0 +1,45 @@
+query VolunteerById {
+    volunteer(
+        input: {
+            id: "cl0uc2ii422509tun1zfetwh2"
+        }
+    ) {
+        id
+        firstName
+        lastName
+        organization
+        description
+        cities {
+            id
+            title
+        }
+        activities {
+            id
+            title
+        }
+        social {
+            id
+            url
+            provider {
+                id
+                title
+            }
+        }
+        payments {
+            id
+            metadata
+            provider {
+                id
+                title
+            }
+        }
+        contacts {
+            id
+            metadata
+            provider {
+                id
+                title
+            }
+        }
+    }
+}
