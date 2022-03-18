@@ -10,16 +10,6 @@ services:
     ports:
       - '80:80'
 
-  db:
-    image: 'postgres:14'
-    command: ["postgres", "-c", "log_statement=all"]
-    restart: always
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-    ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
-
   api-gateway:
     image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:main'
     depends_on:
@@ -29,18 +19,14 @@ services:
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
     command: >
-      sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js"
+      sh -c "cd /usr/src/app && pm2-runtime dist/main"
 
   volunteer-service:
     image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:main'
-    depends_on:
-      - db
     environment:
       APP_PORT: ${VOLUNTEER_SERVICE_APP_PORT}
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}
     command: >
-      sh -c "cd /usr/src/app && npx prisma migrate dev && pm2-runtime dist/src/main.js"
-    ports:
-      - ${VOLUNTEER_SERVICE_APP_PORT}:${VOLUNTEER_SERVICE_APP_PORT}
+      sh -c "cd /usr/src/app && npx prisma migrate dev && pm2-runtime dist/main"
