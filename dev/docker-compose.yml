@@ -31,8 +31,11 @@ services:
       APP_PORT: ${GRAPHQL_SERVER_APP_PORT}
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
+    volumes:
+      - '../../api-gateway:/usr/src/app'
+    # change to npm start
     command: >
-      sh -c "cd /usr/src/app && pm2-runtime dist/main"
+      sh -c "cd /usr/src/app && pm2-dev dist/src/main.js"
 
   volunteer-service:
     build:
@@ -46,7 +49,9 @@ services:
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}
+    volumes:
+      - '../../volunteer-service:/usr/src/app'
     command: >
-      sh -c "cd /usr/src/app && npx prisma migrate dev && pm2-runtime dist/main"
+      sh -c "cd /usr/src/app && npx prisma migrate dev && pm2-dev dist/src/main.js"
     ports:
       - ${VOLUNTEER_SERVICE_APP_PORT}:${VOLUNTEER_SERVICE_APP_PORT}
