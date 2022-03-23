@@ -35,7 +35,7 @@ services:
       - '../../api-gateway:/usr/src/app'
     # change to npm start
     command: >
-      sh -c "cd /usr/src/app && pm2-dev dist/src/main.js"
+      sh -c "cd /usr/src/app && npm run start:dev"
 
   volunteer-service:
     build:
@@ -52,6 +52,6 @@ services:
     volumes:
       - '../../volunteer-service:/usr/src/app'
     command: >
-      sh -c "cd /usr/src/app && npx prisma migrate dev && pm2-dev dist/src/main.js"
+      sh -c "cd /usr/src/app && npx prisma migrate dev && npm run start:dev"
     ports:
       - ${VOLUNTEER_SERVICE_APP_PORT}:${VOLUNTEER_SERVICE_APP_PORT}
