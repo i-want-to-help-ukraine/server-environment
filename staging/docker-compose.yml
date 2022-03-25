@@ -22,6 +22,27 @@ services:
       - ${POSTGRES_PORT}:${POSTGRES_PORT}
     restart: always
 
+  website:
+    image: 'ghcr.io/i-want-to-help-ukraine/i-want-to-help-ukraine-website:release-RC_25032022'
+    depends_on:
+      - api-gateway
+    environment:
+      CLOUDINARY_NAME: ${CLOUDINARY_NAME}
+      CLOUDINARY_API_KEY: ${CLOUDINARY_API_KEY}
+      CLOUDINARY_API_SECRET: ${CLOUDINARY_API_SECRET}
+      CLOUDINARY_USER_AVATARS_PRESET_NAME: ${CLOUDINARY_USER_AVATARS_PRESET_NAME}
+      CLOUDINARY_USER_AVATARS_FOLDER_NAME: ${CLOUDINARY_USER_AVATARS_FOLDER_NAME}
+      AUTH0_DOMAIN: ${AUTH0_DOMAIN}
+      AUTH0_API_URL: ${AUTH0_API_URL}
+      AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID}
+      GRAPHQL_URL: ${GRAPHQL_URL}
+      AUTH0_API_TOKEN: ${AUTH0_API_TOKEN}
+      PORT: ${WEBSITE_PORT}
+      HOST: ${WEBSITE_HOST}
+    command: >
+      sh -c "cd /usr/src/app && npm start"
+    restart: on-failure
+
   api-gateway:
     image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:release-RC_20032022'
     depends_on:
@@ -32,7 +53,7 @@ services:
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
     command: >
       sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js"
-    restart: always
+    restart: on-failure
 
   volunteer-service:
     image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-20032022'
@@ -47,4 +68,4 @@ services:
       sh -c "cd /usr/src/app && npx prisma migrate dev && pm2-runtime dist/src/main.js"
     ports:
       - ${VOLUNTEER_SERVICE_APP_PORT}:${VOLUNTEER_SERVICE_APP_PORT}
-    restart: always
+    restart: on-failure
