@@ -23,7 +23,7 @@ services:
     restart: always
 
   website:
-    image: 'ghcr.io/i-want-to-help-ukraine/i-want-to-help-ukraine-website:release-RC_25032022'
+    image: 'ghcr.io/i-want-to-help-ukraine/i-want-to-help-ukraine-website:RC_26032022'
     depends_on:
       - api-gateway
     environment:
