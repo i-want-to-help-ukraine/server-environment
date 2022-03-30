@@ -9,7 +9,6 @@ services:
       - './reverse-proxy/nginx.conf:/etc/nginx/nginx.conf'
     ports:
       - '80:80'
-      - '443:443'
     restart: always
 
   api-gateway:
@@ -17,11 +16,14 @@ services:
     depends_on:
       - volunteer-service
     environment:
+      NODE_ENV: ${NODE_ENV}
       APP_PORT: ${GRAPHQL_SERVER_APP_PORT}
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
       AUTH0_DOMAIN: ${GQL_AUTH0_DOMAIN}
       AUTH0_AUDIENCE: ${GQL_AUTH0_AUDIENCE}
+      PM2_PUBLIC_KEY: ${PM2_PUBLIC_KEY}
+      PM2_SECRET_KEY: ${PM2_SECRET_KEY}
     command: >
       sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js"
     restart: on-failure
@@ -32,12 +34,13 @@ services:
     depends_on:
       - db
     environment:
+      NODE_ENV: ${NODE_ENV}
       APP_PORT: ${VOLUNTEER_SERVICE_APP_PORT}
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}
+      PM2_PUBLIC_KEY: ${PM2_PUBLIC_KEY}
+      PM2_SECRET_KEY: ${PM2_SECRET_KEY}
     command: >
       sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js"
-    ports:
-      - ${VOLUNTEER_SERVICE_APP_PORT}:${VOLUNTEER_SERVICE_APP_PORT}
     restart: on-failure
