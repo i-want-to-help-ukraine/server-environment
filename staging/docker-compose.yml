@@ -35,6 +35,8 @@ services:
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
       AUTH0_DOMAIN: ${GQL_AUTH0_DOMAIN}
       AUTH0_AUDIENCE: ${GQL_AUTH0_AUDIENCE}
+      PM2_PUBLIC_KEY: ${PM2_PUBLIC_KEY}
+      PM2_SECRET_KEY: ${PM2_SECRET_KEY}
     command: >
       sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js --name api-gateway"
     restart: on-failure
@@ -49,6 +51,8 @@ services:
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}
+      PM2_PUBLIC_KEY: ${PM2_PUBLIC_KEY}
+      PM2_SECRET_KEY: ${PM2_SECRET_KEY}
     command: >
       sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js --name volunteer-service"
     restart: on-failure
