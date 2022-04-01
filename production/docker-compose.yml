@@ -12,7 +12,7 @@ services:
     restart: always
 
   api-gateway:
-    image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:release-RC_20032022'
+    image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:release-RC_30032022'
     depends_on:
       - volunteer-service
     environment:
@@ -25,22 +25,20 @@ services:
       PM2_PUBLIC_KEY: ${PM2_PUBLIC_KEY}
       PM2_SECRET_KEY: ${PM2_SECRET_KEY}
     command: >
-      sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js"
+      sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js --name api-gateway"
     restart: on-failure
 
 
   volunteer-service:
-    image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-20032022'
-    depends_on:
-      - db
+    image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-RC_30032022'
     environment:
       NODE_ENV: ${NODE_ENV}
       APP_PORT: ${VOLUNTEER_SERVICE_APP_PORT}
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}
+      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}?sslmode=require
       PM2_PUBLIC_KEY: ${PM2_PUBLIC_KEY}
       PM2_SECRET_KEY: ${PM2_SECRET_KEY}
     command: >
-      sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js"
+      sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js --name volunteer-service"
     restart: on-failure
