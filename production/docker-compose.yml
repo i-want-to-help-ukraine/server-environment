@@ -12,7 +12,7 @@ services:
     restart: always
 
   api-gateway:
-    image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:release-RC_30032022'
+    image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:release-RC_26042022'
     depends_on:
       - volunteer-service
     environment:
@@ -31,7 +31,7 @@ services:
 
 
   volunteer-service:
-    image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-RC_30032022'
+    image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-RC_26042022'
     environment:
       NODE_ENV: ${NODE_ENV}
       APP_PORT: ${VOLUNTEER_SERVICE_APP_PORT}
