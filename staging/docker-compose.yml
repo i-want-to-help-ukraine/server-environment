@@ -12,19 +12,6 @@ services:
       - '443:443'
     restart: always
 
-  db:
-    image: 'postgres:14'
-    command: ["postgres", "-c", "log_statement=all"]
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: volunteers
-    ports:
-      - ${POSTGRES_PORT}:${POSTGRES_PORT}
-    volumes:
-      - pgdata:/var/lib/postgresql/data
-    restart: always
-
   api-gateway:
     image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:release-RC_10052022'
     depends_on:
@@ -47,7 +34,7 @@ services:
     restart: on-failure
 
   volunteer-service:
-    image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-RC_26042022'
+    image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-RC_10052022'
     depends_on:
       - db
     environment:
@@ -55,7 +42,7 @@ services:
       APP_PORT: ${VOLUNTEER_SERVICE_APP_PORT}
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}
+      DATABASE_URL: ${VOLUNTEER_DATABASE_URL}
       PM2_PUBLIC_KEY: ${PM2_PUBLIC_KEY}
       PM2_SECRET_KEY: ${PM2_SECRET_KEY}
     command: >
