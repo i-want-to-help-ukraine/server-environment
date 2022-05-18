@@ -35,8 +35,6 @@ services:
 
   volunteer-service:
     image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-RC_10052022'
-    depends_on:
-      - db
     environment:
       NODE_ENV: ${NODE_ENV}
       APP_PORT: ${VOLUNTEER_SERVICE_APP_PORT}
