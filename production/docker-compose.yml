@@ -12,7 +12,7 @@ services:
     restart: always
 
   api-gateway:
-    image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:release-RC_26042022'
+    image: 'ghcr.io/i-want-to-help-ukraine/api-gateway:release-RC_10052022'
     depends_on:
       - volunteer-service
     environment:
@@ -20,6 +20,9 @@ services:
       APP_PORT: ${GRAPHQL_SERVER_APP_PORT}
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
+      AUTH_SERVICE_GRPC_NAME: ${AUTH_SERVICE_GRPC_NAME}
+      AUTH_SERVICE_GRPC_PORT: ${AUTH_SERVICE_GRPC_PORT}
+      BACKOFFICE_AUTH_SECRET: ${BACKOFFICE_AUTH_SECRET}
       FIREBASE_AUDIENCE: ${FIREBASE_AUDIENCE}
       FIREBASE_ISSUER: ${FIREBASE_ISSUER}
       FIREBASE_JWK_URI: ${FIREBASE_JWK_URI}
@@ -31,15 +34,28 @@ services:
 
 
   volunteer-service:
-    image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-RC_26042022'
+    image: 'ghcr.io/i-want-to-help-ukraine/volunteer-service:release-RC_10052022'
     environment:
       NODE_ENV: ${NODE_ENV}
       APP_PORT: ${VOLUNTEER_SERVICE_APP_PORT}
       VOLUNTEER_SERVICE_GRPC_NAME: ${VOLUNTEER_SERVICE_GRPC_NAME}
       VOLUNTEER_SERVICE_GRPC_PORT: ${VOLUNTEER_SERVICE_GRPC_PORT}
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${VOLUNTEER_SERVICE_DB_NAME}?sslmode=require
+      DATABASE_URL: ${VOLUNTEER_DATABASE_URL}
       PM2_PUBLIC_KEY: ${PM2_PUBLIC_KEY}
       PM2_SECRET_KEY: ${PM2_SECRET_KEY}
     command: >
       sh -c "cd /usr/src/app && pm2-runtime dist/src/main.js --name volunteer-service"
+    restart: on-failure
+
+  auth-service:
+    image: 'ghcr.io/i-want-to-help-ukraine/auth-service:release-RC_10052022'
+    environment:
+      NODE_ENV: ${NODE_ENV}
+      APP_PORT: ${AUTH_SERVICE_APP_PORT}
+      AUTH_SERVICE_GRPC_NAME: ${AUTH_SERVICE_GRPC_NAME}
+      AUTH_SERVICE_GRPC_PORT: ${AUTH_SERVICE_GRPC_PORT}
+      BACKOFFICE_AUTH_SECRET: ${BACKOFFICE_AUTH_SECRET}
+      DATABASE_URL: ${AUTH_DATABASE_URL}
+    command: >
+      sh -c "cd /usr/src/app && npm run start:prod"
     restart: on-failure
